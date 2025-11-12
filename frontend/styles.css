@@ -1,0 +1,270 @@
+/* =========================
+   Mastermind UI – Modern CSS
+   Jour/Nuit + accents néon
+   ========================= */
+
+/* ---------- Theme tokens ---------- */
+:root{
+  /* gouttière (colonne arcs) */
+  --gutter-w: 90px;
+  --gutter-gap: 30px;
+
+  /* radios/ombres/animations */
+  --radius: 12px;
+  --shadow-1: 0 6px 20px rgba(0,0,0,.20);
+  --shadow-2: 0 10px 32px rgba(0,0,0,.30);
+  --ts-fast: 120ms;
+  --ts-slow: 220ms;
+
+  /* base (dark par défaut) */
+  --bg:#0e1117; --panel:#141925; --elev:#182035;
+  --border:#273048; --text:#d9e0ee; --muted:#9aa5bf;
+
+  /* brand */
+  --primary:#64d26f; --primary-2:#77f186;
+  --primary-glow: 0 0 12px rgba(100,210,111,.55),
+                  0 0 24px rgba(100,210,111,.25);
+
+  /* arcs */
+  --accent-yellow:#ffd166;
+  --accent-pink:#ff6ea8;
+  --accent-blue:#6ecbff;
+
+  /* sémantique */
+  --error:#ff5c5c; --success:#48d597;
+
+  /* boutons */
+  --btn-bg:#1b2438; --btn-bg-hover:#222c45; --btn-outline:#2f3a5a;
+
+  /* zones code */
+  --code-bg:#0f1523;
+}
+
+/* ---------- Light par préférence système ---------- */
+@media (prefers-color-scheme: light){
+  :root{
+    --bg:#f7f9fc; --panel:#fff; --elev:#fff;
+    --border:#e3e8f1; --text:#0f1420; --muted:#55627a;
+    --btn-bg:#f1f4fb; --btn-bg-hover:#e9eef8; --btn-outline:#cfd8ea;
+    --code-bg:#f6f8ff;
+  }
+}
+
+/* ---------- Overrides manuels ---------- */
+body[data-theme="dark"]{
+  --bg:#0e1117; --panel:#141925; --elev:#182035;
+  --border:#273048; --text:#d9e0ee; --muted:#9aa5bf;
+  --btn-bg:#1b2438; --btn-bg-hover:#222c45; --btn-outline:#2f3a5a;
+  --code-bg:#0f1523;
+}
+body[data-theme="light"]{
+  --bg:#f7f9fc; --panel:#fff; --elev:#fff;
+  --border:#e3e8f1; --text:#0f1420; --muted:#55627a;
+  --btn-bg:#f1f4fb; --btn-bg-hover:#e9eef8; --btn-outline:#cfd8ea;
+  --code-bg:#f6f8ff;
+}
+
+/* ---------- Base ---------- */
+*{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; height:100%; background:var(--bg); color:var(--text);
+  font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+h1,h2,h3{ margin:0 0 8px 0; font-weight:600; }
+a{ color:inherit; text-decoration:none; }
+
+/* ---------- Top bar ---------- */
+.topbar{ display:flex; justify-content:space-between; align-items:center;
+  padding:12px 16px; background:var(--panel); border-bottom:1px solid var(--border);
+  position:sticky; top:0; z-index:5; height:5vh }
+.tabs{ display:flex; gap:8px; }
+.tab{ background:transparent; border:1px solid var(--border); color:var(--text);
+  padding:8px 12px; border-radius:10px; cursor:pointer;
+  transition:background var(--ts-fast), border-color var(--ts-fast), transform var(--ts-fast); }
+.tab:hover{ border-color:var(--btn-outline); background:var(--btn-bg); }
+.tab.active{ background:linear-gradient(180deg, rgba(100,210,111,.15), rgba(100,210,111,.05));
+  border-color:rgba(100,210,111,.65); box-shadow:var(--primary-glow); }
+
+/* ---------- Layout app ---------- */
+#app{ display:flex; flex-direction:column; height:calc(100vh - 5vh); }
+.tabview{ display:none; flex:1; min-height:0; }
+.tabview.active{ display:flex; min-height:0; overflow:hidden; }
+
+/* ---------- Sidebar ---------- */
+.sidebar{ width:300px; background:var(--panel); border-right:1px solid var(--border);
+  padding:16px; display:flex; flex-direction:column; gap:16px; overflow:auto; }
+.menu-section-title{ font-size:12px; text-transform:uppercase; letter-spacing:.08em;
+  color:var(--muted); margin-bottom:6px; }
+.menu-buttons{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+
+/* ---------- Buttons ---------- */
+button{ cursor:pointer; border-radius:12px; border:1px solid var(--btn-outline);
+  background:var(--btn-bg); color:var(--text); padding:10px 12px;
+  transition:transform var(--ts-fast), box-shadow var(--ts-fast),
+             background var(--ts-fast), border-color var(--ts-fast); }
+button:hover{ background:var(--btn-bg-hover); border-color:var(--btn-outline); transform:translateY(-1px); }
+button:active{ transform:translateY(0); }
+button.primary{ background:linear-gradient(180deg, rgba(100,210,111,.22), rgba(100,210,111,.10));
+  border-color:rgba(100,210,111,.55); color:#0e1a12; box-shadow:var(--primary-glow); }
+button.primary:hover{ background:linear-gradient(180deg, rgba(119,241,134,.30), rgba(100,210,111,.18));
+  border-color:rgba(119,241,134,.80); }
+button.secondary{ background:var(--btn-bg); }
+button.ghost{ background:transparent; border-color:var(--border); }
+
+/* ---------- Editor wrappers (Edit & Compose) ---------- */
+.editor-wrap{
+  position:relative; flex:1; display:flex; flex-direction:column;
+  min-height:0; overflow:hidden; /* évite le scroll inutile autour du textarea */
+}
+
+/* Textareas identiques */
+#editor,#mixer{
+  flex:1; width:100%;
+  padding:16px 16px 16px calc(var(--gutter-w) + var(--gutter-gap));
+  border:none; outline:none; background:var(--code-bg); color:var(--text);
+  font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size:14px; line-height:1.55;
+  position:relative; z-index:1; overflow:auto; border-left:1px solid var(--border);
+}
+
+/* Canvas arcs : même pour les 2 écrans */
+#gutter-arcs,#mixer-gutter{
+  position:absolute; left:0; top:0; bottom:0; width:var(--gutter-w);
+  background:transparent; z-index:2; pointer-events:none;
+}
+
+/* Petit séparateur vertical entre arcs et texte */
+.editor-wrap::before{
+  content:""; position:absolute; left:var(--gutter-w); top:0; bottom:0;
+  width:1px; background:var(--border); z-index:1;
+}
+
+/* ---------- Analyse live ---------- */
+#live-analysis{ border-top:1px solid var(--border); padding:8px 12px; background:var(--panel);
+  font-size:12px; color:var(--muted); }
+#analysis-list{ margin:6px 0 0 0; padding:0; list-style:none; }
+#analysis-list li{ margin:2px 0; }
+
+/* ---------- Badges ---------- */
+.badge{ padding:3px 8px; border-radius:999px; font-size:11px; margin-right:6px;
+  background:#1f2638; color:var(--muted); border:1px solid var(--border); }
+.badge.date{    background:rgba(110,203,255,.15); color:var(--accent-blue);  border-color:rgba(110,203,255,.35); }
+.badge.project{ background:rgba(255,209,102,.15); color:var(--accent-yellow); border-color:rgba(255,209,102,.35); }
+.badge.tag{     background:rgba(119,241,134,.12); color:var(--primary-2); border-color:rgba(119,241,134,.45); box-shadow:var(--primary-glow); }
+.badge.error{   background:rgba(255,92,92,.15);   color:var(--error);        border-color:rgba(255,92,92,.45); }
+
+/* ---------- Compose ---------- */
+.compose-wrap{ flex:1; display:flex; flex-direction:column; min-height:0; }
+.compose-toolbar{ display:flex; align-items:center; justify-content:space-between;
+  padding:8px; border-bottom:1px solid var(--border); background:var(--panel); }
+
+/* ---------- Chips ---------- */
+.chips{ display:flex; flex-wrap:wrap; gap:8px; }
+.chip{ padding:6px 10px; border-radius:999px; user-select:none; cursor:pointer;
+  background:var(--btn-bg); border:1px solid var(--btn-outline); color:var(--text);
+  transition:box-shadow var(--ts-fast), transform var(--ts-fast), border-color var(--ts-fast), background var(--ts-fast); }
+.chip:hover{ transform:translateY(-1px); border-color:var(--btn-outline); }
+.chip.active{ background:rgba(119,241,134,.12); border-color:rgba(119,241,134,.65); box-shadow:var(--primary-glow); }
+.chip.menu{ position:relative; }
+.context-menu{ position:absolute; top:32px; right:0; background:var(--elev);
+  border:1px solid var(--border); padding:6px; border-radius:10px; display:none; box-shadow:var(--shadow-1); z-index:10; }
+.context-menu button{ display:block; width:180px; padding:8px 10px; background:transparent;
+  border:1px solid transparent; color:var(--text); text-align:left; border-radius:8px; }
+.context-menu button:hover{ background:var(--btn-bg-hover); border-color:var(--btn-outline); }
+
+/* ---------- Modal/Toast/Calendar ---------- */
+.modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.45);
+  display:none; align-items:center; justify-content:center; z-index:50; }
+.modal{ background:var(--panel); border:1px solid var(--border); border-radius:14px;
+  width:min(1100px,94vw); max-height:90vh; overflow:hidden; display:flex; flex-direction:column; box-shadow:var(--shadow-2); }
+.modal header{ padding:12px 14px; border-bottom:1px solid var(--border); background:var(--elev);
+  display:flex; justify-content:space-between; align-items:center; font-weight:600; }
+.modal .body{ display:grid; grid-template-columns:1fr 1fr; gap:0; min-height:280px; }
+.modal .pane{ padding:12px; border-right:1px solid var(--border); }
+.modal .pane:last-child{ border-right:none; }
+.modal pre{ white-space:pre-wrap; word-wrap:break-word; font-size:13px; background:var(--code-bg);
+  padding:10px; border-radius:10px; border:1px solid var(--border); }
+.modal footer{ display:flex; gap:10px; padding:12px; border-top:1px solid var(--border);
+  justify-content:flex-end; background:var(--panel); }
+pre.diff del{ background:rgba(255,0,0,.15); text-decoration:none; }
+pre.diff ins{ background:rgba(0,255,0,.15); text-decoration:none; }
+
+.toast{ position:fixed; bottom:16px; right:16px; background:var(--elev); border:1px solid var(--border);
+  color:var(--text); padding:10px 12px; border-radius:10px; opacity:0; transform:translateY(8px);
+  transition:all var(--ts-slow); z-index:60; box-shadow:var(--shadow-1); }
+.toast.show{ opacity:1; transform:translateY(0); }
+
+#calendar{ display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
+.cal-cell{ padding:8px; text-align:center; border:1px solid var(--border); border-radius:10px;
+  background:var(--btn-bg); cursor:pointer; color:var(--text);
+  transition:transform var(--ts-fast), box-shadow var(--ts-fast), border-color var(--ts-fast), background var(--ts-fast); }
+.cal-cell.highlight{ background:rgba(119,241,134,.12); }
+.cal-cell:hover{ transform:translateY(-1px); border-color:var(--btn-outline); }
+.cal-cell.active{ background:rgba(119,241,134,.12); border-color:rgba(119,241,134,.75); box-shadow:var(--primary-glow); }
+.cal-cell.disabled{ opacity:.35; cursor:default; }
+
+/* --- Calendrier : boutons selects jolis --- */
+.cal-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.cal-controls select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border: 1px solid var(--btn-outline);
+  background: var(--btn-bg);
+  color: var(--text);
+  padding: 8px 34px 8px 12px;
+  border-radius: 12px;
+  outline: none;
+  transition: box-shadow var(--ts-fast), border-color var(--ts-fast), background var(--ts-fast);
+  cursor: pointer;
+  box-shadow: none;
+  line-height: 1.2;
+}
+
+/* flèche */
+.cal-controls select {
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+    linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) calc(50% - 3px),
+    calc(100% - 12px) calc(50% - 3px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+
+.cal-controls select:hover {
+  background: var(--btn-bg-hover);
+  border-color: var(--btn-outline);
+}
+
+.cal-controls select:focus {
+  border-color: rgba(119,241,134,0.65);
+  box-shadow: var(--primary-glow);
+}
+
+/* Indication de données (sur le bouton) */
+.cal-controls select.active {
+  background: rgba(119,241,134,0.12);
+  border-color: rgba(119,241,134,0.65);
+  box-shadow: var(--primary-glow);
+}
+
+/* Dans la liste (quand le navigateur l’autorise) */
+#cal-month option.has-data,
+#cal-year  option.has-data {
+  background: rgba(119,241,134,0.18);
+  color: var(--text);
+}
+
+
+
+.hr{ height:1px; background:var(--border); margin:8px 0; }
+
+/* Toggle thème */
+#btn-theme{ width:40px; height:36px; display:inline-flex; align-items:center; justify-content:center;
+  font-size:18px; border-radius:12px; border:1px solid var(--btn-outline); background:var(--btn-bg); box-shadow:none; }
+#btn-theme:hover{ background:var(--btn-bg-hover); border-color:var(--btn-outline); }

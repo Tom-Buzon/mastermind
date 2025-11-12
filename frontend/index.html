@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mastermind</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>Mastermind</h1>
+    <nav class="tabs">
+      <button class="tab active" data-tab="edit">Éditer</button>
+      <button class="tab" data-tab="compose">Compose</button>
+      <button id="btn-theme" class="ghost" aria-label="Basculer thème" title="Basculer thème">🌗</button>
+    </nav>
+  </header>
+
+  <main id="app">
+    <!-- Onglet EDIT -->
+    <section id="tab-edit" class="tabview active">
+      <aside class="sidebar">
+        <div class="menu-buttons">
+          <button id="btn-date">+ Date</button>
+          <button id="btn-section">+ Section</button>
+          <button id="btn-tag">+ Tag</button>
+          <button id="btn-table">Table</button>
+          <button id="btn-checklist">Checklist</button>
+        </div>
+        <div class="menu-footer">
+          <button id="btn-config" class="secondary">⚙︎ Config</button>
+          <button id="btn-export" class="primary wide">Export</button>
+        </div>
+      </aside>
+
+      <div class="editor-wrap">
+        <!-- même structure que Compose : canvas + textarea -->
+        <canvas id="gutter-arcs"></canvas>
+        <textarea id="editor" spellcheck="false" placeholder="Écrivez ici du texte brut avec vos balises..."></textarea>
+      </div>
+
+      <div id="live-analysis">
+        <div><strong>Analyse en direct</strong></div>
+        <ul id="analysis-list"></ul>
+      </div>
+    </section>
+
+    <!-- Onglet COMPOSE -->
+    <section id="tab-compose" class="tabview">
+      <aside class="sidebar">
+        <div>
+          <h3>Projets</h3>
+          <div id="chips-projects" class="chips"></div>
+        </div>
+        <div>
+          <h3>Tags</h3>
+          <div id="chips-tags" class="chips"></div>
+        </div>
+        <div>
+          <h3>Dates</h3>
+          <div class="cal-controls">
+            <select id="cal-year"></select>
+            <select id="cal-month"></select>
+          </div>
+          <div id="calendar"></div>
+        </div>
+      </aside>
+
+      <div class="compose-wrap">
+        <div class="compose-toolbar">
+          <div></div>
+          <button id="btn-save-compose" class="primary">Sauvegarder</button>
+        </div>
+
+        <div class="editor-wrap">
+          <canvas id="mixer-gutter"></canvas>
+          <textarea id="mixer" spellcheck="false" placeholder="Aperçu brut..."></textarea>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Un SEUL point d'entrée : main.js (il importe tout le reste) -->
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

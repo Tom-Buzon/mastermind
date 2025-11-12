@@ -1,0 +1,13 @@
+{
+  "date": {
+    "linePrefix": ":::date {DD/MM/YYYY}"
+  },
+  "section": {
+    "startPrefix": "__/@@{name}",
+    "endLine": "@@/"
+  },
+  "tags": {
+    "open": "<{name}>",
+    "close": "<{name}/>"
+  }
+}
